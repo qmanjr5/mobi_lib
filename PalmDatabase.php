@@ -2,7 +2,7 @@
 class PalmDatabase
 {
 	public $properties;
-	public $records;
+	public $records = array();
 	protected $filehandle;
 	public function __construct($file)
 	{
@@ -24,6 +24,11 @@ class PalmDatabase
 	public function load();
 	{
 		$this->properties = new PalmDatabase_Properties($this->$filehandle);
-		$this->records = new PalmDatabase_Records($this->$filehandle);
+		
+		if(count($this->properties->records))
+			foreach($this->properties->records as $key => $recordInfo)
+			{
+				
+			}
 	}
 }
