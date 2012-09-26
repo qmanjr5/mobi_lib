@@ -15,6 +15,7 @@ class PalmDatabase_Properties
 	public $creator;
 	public $uniqueIdSeed;
 	public $nextRecordListId;
+	public $recordInfo;
 
 	public function __construct($file)
 	{
@@ -35,7 +36,7 @@ class PalmDatabase_Properties
 	}
 	public function load();
 	{
-		//Stuff to come
-	
+		$name = fopen($this->filehandle, 32);
+		$this->name = unpack("a",$name);
 	}
 }
