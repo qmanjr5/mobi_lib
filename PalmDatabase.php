@@ -8,7 +8,7 @@ class PalmDatabase
 	{
 		if(is_string($file))
 		{
-			$this->filehandle = fopen($file,"a+");
+			$this->filehandle = fopen($file,"r");
 		}
 		elseif(is_resource($file))
 		{
