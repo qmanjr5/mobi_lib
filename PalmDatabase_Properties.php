@@ -19,13 +19,11 @@ class PalmDatabase_Properties
 
 	public function __construct($file)
 	{
-		echo "File: " . $file;
 	 	$this->filehandle = $file;	
 		$this->load();	
 	}
 	public function load()
 	{
-		$name = fopen($this->filehandle, 32);
-		$this->name = unpack("a",$name);
+		$this->name = fread($this->filehandle, 32);
 	}
 }
