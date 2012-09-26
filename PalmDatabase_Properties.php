@@ -25,5 +25,17 @@ class PalmDatabase_Properties
 	public function load()
 	{
 		$this->name = fread($this->filehandle, 32);
+		$this->attributes = fread($this->filehandle, 2);
+		$this->version = fread($this->filehandle, 2);
+		$this->creation_date = fread($this->filehandle, 4);
+		$this->modification_date = fread($this->filehandle, 4);
+		$this->last_backup_date = fread($this->filehandle, 4);
+		$this->modification_number = fread($this->filehandle, 4);
+		$this->appInfoid = fread($this->filehandle, 4);
+		$this->sortInfoId = fread($this->filehandle, 4);
+		$this->type = fread($this->filehandle, 4);
+		$this->creator = fread($this->filehandle, 4);
+		$this->uniqueIdSeed = fread($this->filehandle, 4);
+		$this->nextRecordlistId = fread($this->filehandle, 4);
 	}
 }
