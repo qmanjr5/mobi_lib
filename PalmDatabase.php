@@ -1,6 +1,8 @@
 <?php
 class PalmDatabase
 {
+	public $properties;
+	public $records;
 	protected $filehandle;
 	public function __construct($file)
 	{
