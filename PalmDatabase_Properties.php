@@ -19,22 +19,11 @@ class PalmDatabase_Properties
 
 	public function __construct($file)
 	{
-		if(is_string($file))
-		{
-			$this->filehandle = fopen($file);
-		}
-		elseif(is_resource($file))
-		{
-			$this->filehandle = $file;
-		}
-		else
-		{
-			return false;
-		}
-
-		$this->load();
+		echo "File: " . $file;
+	 	$this->filehandle = $file;	
+		$this->load();	
 	}
-	public function load();
+	public function load()
 	{
 		$name = fopen($this->filehandle, 32);
 		$this->name = unpack("a",$name);
