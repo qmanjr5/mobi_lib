@@ -24,5 +24,6 @@ class PalmDatabase
 	public function load()
 	{
 		$this->properties = new PalmDatabase_Properties($this->filehandle);
+		$this->records = new PalmDatabase_Records($this->filehandle);
 	}
 }
