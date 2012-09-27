@@ -24,18 +24,44 @@ class PalmDatabase_Properties
 	}
 	public function load()
 	{
-		$this->name = fread($this->filehandle, 32);
-		$this->attributes = fread($this->filehandle, 2);
-		$this->version = fread($this->filehandle, 2);
-		$this->creation_date = fread($this->filehandle, 4);
-		$this->modification_date = fread($this->filehandle, 4);
-		$this->last_backup_date = fread($this->filehandle, 4);
-		$this->modification_number = fread($this->filehandle, 4);
-		$this->appInfoid = fread($this->filehandle, 4);
-		$this->sortInfoId = fread($this->filehandle, 4);
-		$this->type = fread($this->filehandle, 4);
-		$this->creator = fread($this->filehandle, 4);
-		$this->uniqueIdSeed = fread($this->filehandle, 4);
-		$this->nextRecordlistId = fread($this->filehandle, 4);
+		$name = fread($this->filehandle, 32);
+		$this->name = $name;
+		
+		$attirbutes = fread($this->filehandle, 2);
+		$this->attributes = $attributes;
+		
+		$version = fread($this->filehandle, 2);
+		$this->version = unpack("n", $version);
+		
+		$creation_date = fread($this->filehandle, 4);
+		$this->creation_date = unpack("N", $creation_date);
+
+		$modification_date = fread($this->filehandle, 4);
+		$this->modification_date = unpack("N", $modification_date);
+
+		$last_backup_date = fread($this->filehandle, 4);
+		$this->last_backup_date = unpack("N", $modification_date);
+
+		$modification_number = fread($this->filehandle, 4);
+		$this->modification_number = unpack("N", $modification_number);
+		
+		$appinfoid = fread($this->filehandle, 4);
+		$this->appInfoId = unpack("N", $appinfoid);
+
+		$sortinfoid = fread($this->filehandle, 4);
+		$this->sortInfoId = unpack("N", $sortinfoid);
+
+		$type = fread($this->filehandle, 4);
+		$this->type = $type;
+
+		$creator = fread($this->filehandle, 4);
+		$this->creator = $creator;
+
+		$uniqueidseed = fread($this->filehandle, 4);
+		$this->uniqueIdSeed = unpack("N", $uniqueidseed);
+
+		$nextrecordlistid = fread($this->filehandle, 4);
+		$this->nextRecordListId = unpack("N", $nextrecordlistid);
+
 	}
 }
