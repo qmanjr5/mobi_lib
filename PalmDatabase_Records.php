@@ -1,8 +1,9 @@
 <?php
 class PalmDatabase_Records
 {
-	protected filehandle;
-	public records = array();
+	protected $filehandle;
+	public $records = array();
+	
 	public function __construct($file)
 	{
 		$this->filehandle = $file;
@@ -13,7 +14,7 @@ class PalmDatabase_Records
 		fseek($this->filehandle, 76); 
 		$numberOfRecords = unpack("n",fread($this->filehandle, 2));
 		fseek($this->filehandle, 78);
-		for($i=1; $i<=$numberOfRecords; $i++);
+		for($i=0; $i<=$numberOfRecords; $i++);
 		{
 			$current_pos = 78 + (8*$i);
 			$record_pos = unpack("N",fread($this->filehandle, 4));
@@ -29,11 +30,7 @@ class PalmDatabase_Records
 			
 			fseek($this->filehandle, $record_pos);
 			$this->records[$i][data] = fread($this->filehandle, $record_length);
-			
-
-			
 		}
-
 	}
 }
 
