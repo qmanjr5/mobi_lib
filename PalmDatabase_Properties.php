@@ -63,5 +63,16 @@ class PalmDatabase_Properties
 		$nextrecordlistid = fread($this->filehandle, 4);
 		$this->nextRecordListId = unpack("N", $nextrecordlistid);
 
+		$numRecords = unpack("n", fread($this->filehandle, 2));
+	
+		for($i=0;$i<=$numRecords;$i++)
+		{
+			$offset = fread($this->filehandle, 4);
+			$this->recordInfo["$i"]["offset"] = unpack("N", $offset);
+			$attributes = fread($this->filehandle, 1);
+			$this->recordInfo["$i"]["attributes"] = $attributes;
+			$id = fread($this->filehandle, 3);
+			$this->recordInfo["$i"]["id"] = unpack("N","\0{$id}");
+		}
 	}
 }
