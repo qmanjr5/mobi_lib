@@ -2,6 +2,6 @@
 include ("PalmDatabase.php");
 include ("PalmDatabase_Properties.php");
 include ("PalmDatabase_Record.php");
-ini_set("Memory_limit","120M");
 $test = new PalmDatabase("testbook.mobi");
-echo $test->records[3]->data;
+echo "Database name: " . $test->properties->name;
+echo "Database records: " . count($test->records);

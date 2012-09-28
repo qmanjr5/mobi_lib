@@ -51,6 +51,5 @@ class PalmDatabase
 			} 
 			while($recordInfo = next($this->properties->recordInfo));
 		}
-		echo count($this->records);
 	}
 }
