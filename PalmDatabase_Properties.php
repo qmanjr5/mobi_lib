@@ -27,7 +27,7 @@ class PalmDatabase_Properties
 		$name = fread($this->filehandle, 32);
 		$this->name = $name;
 		
-		$attirbutes = fread($this->filehandle, 2);
+		$attributes = fread($this->filehandle, 2);
 		$this->attributes = $attributes;
 		
 		$version = unpack("n", fread($this->filehandle, 2));

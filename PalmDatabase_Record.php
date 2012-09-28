@@ -14,9 +14,10 @@ class PalmDatabase_Record
 	}
 	public function load()
 	{
-		fseek($this->filehandle, $info["offset"]);
+		fseek($this->filehandle,$this->info["offset"]);
 		
 		$data = fread($this->filehandle, $this->size);
+		$this->data = $data;
 	}
 }
 
