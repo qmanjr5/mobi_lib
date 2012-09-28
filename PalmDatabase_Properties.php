@@ -30,26 +30,26 @@ class PalmDatabase_Properties
 		$attirbutes = fread($this->filehandle, 2);
 		$this->attributes = $attributes;
 		
-		$version = fread($this->filehandle, 2);
-		$this->version = unpack("n", $version);
+		$version = unpack("n", fread($this->filehandle, 2));
+		$this->version = $version["1"];
 		
-		$creation_date = fread($this->filehandle, 4);
-		$this->creation_date = unpack("N", $creation_date);
+		$creation_date = unpack("N", fread($this->filehandle, 4));
+		$this->creation_date = $creation_date["1"];
 
-		$modification_date = fread($this->filehandle, 4);
-		$this->modification_date = unpack("N", $modification_date);
+		$modification_date = unpack("N", fread($this->filehandle, 4));
+		$this->modification_date = $modification_date["1"];
 
-		$last_backup_date = fread($this->filehandle, 4);
-		$this->last_backup_date = unpack("N", $modification_date);
+		$last_backup_date = unpack("N", fread($this->filehandle, 4));
+		$this->last_backup_date = $last_backup_date["1"];
 
-		$modification_number = fread($this->filehandle, 4);
-		$this->modification_number = unpack("N", $modification_number);
+		$modification_number = unpack("N", fread($this->filehandle, 4));
+		$this->modification_number = $modification_number["1"];
 		
-		$appinfoid = fread($this->filehandle, 4);
-		$this->appInfoId = unpack("N", $appinfoid);
+		$appinfoid = unpack("N", fread($this->filehandle, 4));
+		$this->appInfoId = $appinfoid["1"];
 
-		$sortinfoid = fread($this->filehandle, 4);
-		$this->sortInfoId = unpack("N", $sortinfoid);
+		$sortinfoid = unpack("N", fread($this->filehandle, 4));
+		$this->sortInfoId = $sortinfoid["1"];
 
 		$type = fread($this->filehandle, 4);
 		$this->type = $type;
@@ -57,22 +57,22 @@ class PalmDatabase_Properties
 		$creator = fread($this->filehandle, 4);
 		$this->creator = $creator;
 
-		$uniqueidseed = fread($this->filehandle, 4);
-		$this->uniqueIdSeed = unpack("N", $uniqueidseed);
+		$uniqueidseed = unpack("N", fread($this->filehandle, 4));
+		$this->uniqueIdSeed = $uniqueidseed["1"];
 
-		$nextrecordlistid = fread($this->filehandle, 4);
-		$this->nextRecordListId = unpack("N", $nextrecordlistid);
+		$nextrecordlistid = unpack("N", fread($this->filehandle, 4));
+		$this->nextRecordListId = $nextrecordlistid["1"];
 
-		$numRecords = unpack("n", fread($this->filehandle, 2));
-	
+		list(,$numRecords) = unpack("n", fread($this->filehandle, 2));
+		
 		for($i=0;$i<=$numRecords;$i++)
 		{
 			$offset = fread($this->filehandle, 4);
-			$this->recordInfo["$i"]["offset"] = unpack("N", $offset);
+			list(,$this->recordInfo["$i"]["offset"]) = unpack("N", $offset);
 			$attributes = fread($this->filehandle, 1);
 			$this->recordInfo["$i"]["attributes"] = $attributes;
 			$id = fread($this->filehandle, 3);
-			$this->recordInfo["$i"]["id"] = unpack("N","\0{$id}");
+			list(,$this->recordInfo["$i"]["id"]) = unpack("I","{$id}\0");
 		}
 	}
 }

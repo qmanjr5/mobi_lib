@@ -25,22 +25,26 @@ public function __construct($file)
 public function load()
 {
 	$this->properties = new PalmDatabase_Properties($this->filehandle);
-	$this->recordInfo = new PalmDatabase_Records($this->filehandle);
+	
 	if(count($this->properties->recordInfo)) {
 	$recordInfo = reset($this->properties->recordInfo);
 	do {
-		$start = $recordInfo->offset;
+		$start = $recordInfo["offset"];
 		if($next = next($this->properties->recordInfo)) {
 			prev($this->properties->recordInfo);
-			$end = $next->offset;
+			$end = $next["offset"];
 		} else {
-			$stat = fstat($this->fileHandle);
+			$stat = fstat($this->filehandle);
 			$end = $stat["size"];
 		}
 		$size = $end - $start;
-		
+		if($size<0)
+		{
+			continue;
+		}
 		$this->records[] = new PalmDatabase_Record($this->filehandle, $recordInfo, $size);
 	} while($recordInfo = next($this->properties->recordInfo));
-}
+	}
+	echo count($this->records);
 	}
 }
