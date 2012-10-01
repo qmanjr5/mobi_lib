@@ -28,7 +28,7 @@ class PalmDatabase_Properties
 		$this->name = $name;
 		
 		$attributes = fread($this->filehandle, 2);
-		$this->attributes = $attributes;
+		$this->attributes = new PalmDatabase_Attributes($attributes);
 		
 		$version = unpack("n", fread($this->filehandle, 2));
 		$this->version = $version["1"];
@@ -70,7 +70,7 @@ class PalmDatabase_Properties
 			$offset = fread($this->filehandle, 4);
 			list(,$this->recordInfo["$i"]["offset"]) = unpack("N", $offset);
 			$attributes = fread($this->filehandle, 1);
-			$this->recordInfo["$i"]["attributes"] = $attributes;
+			$this->recordInfo["$i"]["attributes"] = new PalmDatabase_RecordAttributes($attributes);
 			$id = fread($this->filehandle, 3);
 			list(,$this->recordInfo["$i"]["id"]) = unpack("I","{$id}\0");
 		}

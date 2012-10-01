@@ -1,46 +1,44 @@
 <?php
 class PalmDatabase_Attributes
 {
-	public $filehandle;
-	public $readonly = false;
-	public $dirtyAppInfoArea = false;
-	public $backup = false;
-	public $install_newer = false;
-	public $force_reset = false;
-	public $no_beaming = false;
+	public $attributes;
+	public $readonly = "false";
+	public $dirtyAppInfoArea = "false";
+	public $backup = "false";
+	public $install_newer = "false";
+	public $force_reset = "false";
+	public $no_beaming = "false";
 
-	public function __construct($file);
+	public function __construct($attributes)
 	{
-		$this->filehandle = $file;
+		$this->attributes = unpack("n",$attributes);
 		$this->load();
 	}
 	public function load()
 	{
-		fseek($this->filehandle, 32);
-		$attributes = fread($this->filehandle, 2);
-		if($attributes & 0x0002)
+		if($this->attributes & 0x0002)
 		{
-			$this->readonly = true;
+			$this->readonly = "true";
 		}
-		if($attributes & 0x0004)
+		if($this->attributes & 0x0004)
 		{
-			$this->dirtAppInfoArea = true;
+			$this->dirtyAppInfoArea = "true";
 		}
-		if($attributes & 0x0008)
+		if($this->attributes & 0x0008)
 		{
-			$this->backup = true;
+			$this->backup = "true";
 		}
-		if($attributes & 0x0010)
+		if($this->attributes & 0x0010)
 		{
-			$this->install_newew = true;
+			$this->install_newew = "true";
 		}
-		if($attributes & 0x0020)
+		if($this->attributes & 0x0020)
 		{
-			$this->force_reset = true;
+			$this->force_reset = "true";
 		}
-		if($attributes & 0x0040)
+		if($this->attributes & 0x0040)
 		{
-			$this->no_beaming = true;
+			$this->no_beaming = "true";
 		}
 	}
 }
