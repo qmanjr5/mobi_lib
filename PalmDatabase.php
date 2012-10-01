@@ -25,7 +25,7 @@ class PalmDatabase
 	public function load()
 	{
 		$this->properties = new PalmDatabase_Properties($this->filehandle);
-	
+		$this->properties->attributes = new PalmDatabase_Attributes($this->filehandle);	
 		if(count($this->properties->recordInfo)) 
 		{
 			$recordInfo = reset($this->properties->recordInfo);
