@@ -128,7 +128,26 @@ class mobi extends PalmDatabase
 		$this->checkAndRead($this->huffman_record_count, 4, $remaining, "N");
 		$this->checkAndRead($this->exth_flags, 4, $remaining, "N");
 		fread($this->filehandle, 32);
-		
+		$this->checkAndRead($this->drm_offset, 4, "N");
+		$this->checkAndRead($this->drm_count, 4, "N");
+		$this->checkAndRead($this->drm_size, 4, "N");
+		$this->checkAndRead($this->drm_flags, 4, "N");
+		fread($this->filehandle, 12);
+		$this->checkAndRead($this->first_content_record, 2, "n");
+		$this->checkAndRead($this->last_content_record, 2, "n");
+		fread($this->filehandle, 4);
+		$this->checkAndRead($this->fcis_record_number, 4, "N");
+		fread($this->filehandle, 4);
+		$this->checkAndRead($this->fcis_record_number_2, 4, "N");
+		fread($this->filehandle, 4);
+		fread($this->filehandle, 8);
+		fread($this->filehandle, 4);
+		fread($this->filehandle, 4);
+		fread($this->filehandle, 4);
+		fread($this->filehandle, 4);
+		$this->checkAndRead($this->extra_record_data_flags, 4, "N");
+		$this->checkAndRead($this->indx_record_offset, 4, "N");
+		if($this->
 
 	}
 	public function checkAndRead(&$field, $length, &$remaining, $unpack = null)
