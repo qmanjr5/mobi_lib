@@ -46,7 +46,7 @@ class mobi extends PalmDatabase
 	public $last_content_record;
 	public $unknown_4;
 	public $fcis_record_number;
-	public $unknown_5;
+public $unknown_5;
 	public $fcis_record_number_2;
 	public $unknown_6;
 	public $unknown_7;
@@ -61,16 +61,27 @@ class mobi extends PalmDatabase
 	public $exth_numRecords;
 	public $exth_records = array();
 	public $exth_padding;
+	public $index_identifier;
+	public $index_header_length;
+	public $index_type;
+	public $indxt_offset;
+	public $index_count;
+	public $index_encoding;
+	public $index_language;
+	public $total_index_count;
+	public $ordt_start;
+	public $ligt_start;
 	public $filehandle;
 	
 	public function __construct($file)
 	{
-		$this-filehandle = $file;	
+		parent::__construct($file);	
 		$this->load();
 	}
 	public function load()
 	{
-		
+		parent::load();
+		fseek($this->filehandle, $this->records[0]["offset"];
 		$compression = fread($this->filehandle, 2);
 		$this->compression = unpack("n", $compression);
 		
@@ -147,7 +158,35 @@ class mobi extends PalmDatabase
 		fread($this->filehandle, 4);
 		$this->checkAndRead($this->extra_record_data_flags, 4, "N");
 		$this->checkAndRead($this->indx_record_offset, 4, "N");
-		if($this->
+		if($this->exth_flags & 0x40)
+		{
+			$this->checkAndRead($this->exth_identifier, 4, "N");
+			$this->checkAndRead($this->exth_length, 4, "N");
+			$this->checkAndRead($this->exth_numRecords, 4, "N");
+			for($i=1;$i<=$this->exth_numRecords;$i++)
+			{
+				$this->checkAndRead($this->exth_records[$i]["record_type"], 4, "N");
+				$this->checkAndRead($this->exth_records[$i]["record_length"], 4, "N");
+				$length = $this->exth_records[$i]["record_length"] - 8;
+				$tihs->checkAndRead($this->exth_records[$i]["data"], $length);
+			}
+			fread($this->filehandle, $this->header_length%4);
+		}	
+		if(!($this->indx_record_offset & 0xFFFFFFFF))
+		{
+			fseek($this->filehandle, $this->indx_record_offset;
+			$this->checkAndRead($this->index_identifier, 4, "N");
+			$this->checkAndRead($this->index_header_length, 4);
+			$this->checkAndRead($this->index_type, 4);
+			fread($this->filehandle, 8);
+		 	$this->checkAndRead($this->idxt_start, 4);
+			$this->checkAndRead($this->index_count, 4);
+			$this->checkAndRead($this->index_encoding, 4);
+			$this->checkAndRead($this->index_language, 4);
+			$this->checkAndRead($this->total_index_count, 4);
+			$this->checkAndRead($this->ordt_start, 4);
+			$this->checkAndRead($this->ligt_start, 4);	
+		{
 
 	}
 	public function checkAndRead(&$field, $length, &$remaining, $unpack = null)
@@ -162,5 +201,6 @@ class mobi extends PalmDatabase
 			$field = unpack($field, $unpack);
 		}
 		$remaining -= $length;
+		return $field;
 	}
 
