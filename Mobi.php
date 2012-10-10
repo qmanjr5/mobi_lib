@@ -46,7 +46,7 @@ class mobi extends PalmDatabase
 	public $last_content_record;
 	public $unknown_4;
 	public $fcis_record_number;
-public $unknown_5;
+	public $unknown_5;
 	public $fcis_record_number_2;
 	public $unknown_6;
 	public $unknown_7;
@@ -81,7 +81,7 @@ public $unknown_5;
 	public function load()
 	{
 		parent::load();
-		fseek($this->filehandle, $this->records[0]["offset"];
+		fseek($this->filehandle, $this->records[0]["offset"]);
 		$compression = fread($this->filehandle, 2);
 		$this->compression = unpack("n", $compression);
 		
@@ -174,7 +174,7 @@ public $unknown_5;
 		}	
 		if(!($this->indx_record_offset & 0xFFFFFFFF))
 		{
-			fseek($this->filehandle, $this->indx_record_offset;
+			fseek($this->filehandle, $this->indx_record_offset);
 			$this->checkAndRead($this->index_identifier, 4, "N");
 			$this->checkAndRead($this->index_header_length, 4);
 			$this->checkAndRead($this->index_type, 4);
@@ -203,4 +203,4 @@ public $unknown_5;
 		$remaining -= $length;
 		return $field;
 	}
-
+}
