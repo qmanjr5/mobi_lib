@@ -19,7 +19,7 @@ class PalmDatabase_Record
 	public function load()
 	{
 		fseek($this->filehandle,$this->offset);
-		
+		echo "Size: " . $this->size . "\n";	
 		$data = fread($this->filehandle,$this->size);
 		$this->data = $data;
 	}

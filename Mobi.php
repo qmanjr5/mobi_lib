@@ -76,12 +76,11 @@ class mobi extends PalmDatabase
 	public function __construct($file)
 	{
 		parent::__construct($file);	
-		$this->load();
 	}
 	public function load()
 	{
 		parent::load();
-		fseek($this->filehandle, $this->records[0]["offset"]);
+		fseek($this->filehandle, $this->record[0]->offset);
 		$compression = fread($this->filehandle, 2);
 		$this->compression = unpack("n", $compression);
 		
@@ -111,7 +110,8 @@ class mobi extends PalmDatabase
 		$identifier = fread($this->filehandle, 4);
 		$this->identifier = unpack("N", $identifier);
 
-		$remaining = unpack("N",fread($this->filehandle, 4)) - 4;
+		list(,$remaining) = unpack("N",fread($this->filehandle, 4));
+		$remaining -= 4;
 
 		$this->checkAndRead($this->mobi_type, 4, $remaining, "N");
 		$this->checkAndRead($this->text_encoding, 4, $remaining, "N");
@@ -139,36 +139,36 @@ class mobi extends PalmDatabase
 		$this->checkAndRead($this->huffman_record_count, 4, $remaining, "N");
 		$this->checkAndRead($this->exth_flags, 4, $remaining, "N");
 		fread($this->filehandle, 32);
-		$this->checkAndRead($this->drm_offset, 4, "N");
-		$this->checkAndRead($this->drm_count, 4, "N");
-		$this->checkAndRead($this->drm_size, 4, "N");
-		$this->checkAndRead($this->drm_flags, 4, "N");
+		$this->checkAndRead($this->drm_offset, 4, $remaining, "N");
+		$this->checkAndRead($this->drm_count, 4, $remaining, "N");
+		$this->checkAndRead($this->drm_size, 4, $remaining, "N");
+		$this->checkAndRead($this->drm_flags, 4, $remaining, "N");
 		fread($this->filehandle, 12);
-		$this->checkAndRead($this->first_content_record, 2, "n");
-		$this->checkAndRead($this->last_content_record, 2, "n");
+		$this->checkAndRead($this->first_content_record, 2, $remaining, "n");
+		$this->checkAndRead($this->last_content_record, 2, $remaining, "n");
 		fread($this->filehandle, 4);
-		$this->checkAndRead($this->fcis_record_number, 4, "N");
+		$this->checkAndRead($this->fcis_record_number, 4, $remaining, "N");
 		fread($this->filehandle, 4);
-		$this->checkAndRead($this->fcis_record_number_2, 4, "N");
+		$this->checkAndRead($this->fcis_record_number_2, 4, $remaining, "N");
 		fread($this->filehandle, 4);
 		fread($this->filehandle, 8);
 		fread($this->filehandle, 4);
 		fread($this->filehandle, 4);
 		fread($this->filehandle, 4);
 		fread($this->filehandle, 4);
-		$this->checkAndRead($this->extra_record_data_flags, 4, "N");
-		$this->checkAndRead($this->indx_record_offset, 4, "N");
+		$this->checkAndRead($this->extra_record_data_flags, 4, $remaining, "N");
+		$this->checkAndRead($this->indx_record_offset, 4, $remaining, "N");
 		if($this->exth_flags & 0x40)
 		{
-			$this->checkAndRead($this->exth_identifier, 4, "N");
-			$this->checkAndRead($this->exth_length, 4, "N");
-			$this->checkAndRead($this->exth_numRecords, 4, "N");
-			for($i=1;$i<=$this->exth_numRecords;$i++)
+			$this->checkAndRead($this->exth_identifier, 4, $remaining, "N");
+			$this->checkAndRead($this->exth_length, 4, $remaining, "N");
+			$this->checkAndRead($this->exth_numRecords, 4, $remaining, "N");
+			for($i=1;$i>=$this->exth_numRecords;$i++)
 			{
-				$this->checkAndRead($this->exth_records[$i]["record_type"], 4, "N");
-				$this->checkAndRead($this->exth_records[$i]["record_length"], 4, "N");
+				$this->checkAndRead($this->exth_records[$i]["record_type"], 4, $remaining, "N");
+				$this->checkAndRead($this->exth_records[$i]["record_length"], 4, $remaining, "N");
 				$length = $this->exth_records[$i]["record_length"] - 8;
-				$tihs->checkAndRead($this->exth_records[$i]["data"], $length);
+				$tihs->checkAndRead($this->exth_records[$i]["data"], $length, $remaining);
 			}
 			fread($this->filehandle, $this->header_length%4);
 		}	
@@ -186,8 +186,7 @@ class mobi extends PalmDatabase
 			$this->checkAndRead($this->total_index_count, 4);
 			$this->checkAndRead($this->ordt_start, 4);
 			$this->checkAndRead($this->ligt_start, 4);	
-		{
-
+		}
 	}
 	public function checkAndRead(&$field, $length, &$remaining, $unpack = null)
 	{
@@ -198,7 +197,7 @@ class mobi extends PalmDatabase
 		$field = fread($this->filehandle, $length);
 		if($unpack)
 		{
-			$field = unpack($field, $unpack);
+			list(,$field) = unpack($unpack, $field);
 		}
 		$remaining -= $length;
 		return $field;
