@@ -20,7 +20,6 @@ $secret_records = 0;
 $busy_records = 0;
 $dirty_records = 0;
 $deleted_records = 0;
-var_dump($test->records);
 foreach($test->records as $record)
 {
 	if($record->attributes->secret_bit)
@@ -44,6 +43,6 @@ echo "  Secret records: " . $secret_records . "\n";
 echo "  Busy records: " . $busy_records . "\n";
 echo "  Dirty records: " . $dirty_records . "\n";
 echo "  Records to be deleted: " . $deleted_records . "\n";
-echo "Compression type: " . $test->compress . "\n";
-echo "Header length: " . $test->header_length . "\n";
-echo "Header length % 4: " . $test->header_length % 4 . "\n";
+echo "Compression type: " . $test->compression . "\n";
+echo "Header length: " . $test->records[0]->size . "\n";
+echo "Header length % 4: " . $test->records[0]->size % 4 . "\n";
