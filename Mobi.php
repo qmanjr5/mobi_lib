@@ -82,33 +82,32 @@ class mobi extends PalmDatabase
 		parent::load();
 		fseek($this->filehandle, $this->record[0]->offset);
 		$compression = fread($this->filehandle, 2);
-		$this->compression = unpack("n", $compression);
+		list(,$this->compression) = unpack("n", $compression);
 		
 		fread($this->filehandle, 2);
 		
 		$text_length = fread($this->filehandle, 4);
-		$this->text_length = unpack("N", $text_length);
+		list(,$this->text_length) = unpack("N", $text_length);
 		
 		$record_length = fread($this->filehandle, 2);
-		$this->text_length = unpack("n", $text_length);
+		list(,$this->text_length) = unpack("n", $text_length);
 
 		$record_count = fread($this->filehandle, 2);
-		$this->record_count = unpack("n", $record_count);
+		list(,$this->record_count) = unpack("n", $record_count);
 
 		$record_size = fread($this->filehandle, 2);
-		$this->record_size = unpack("n", $record_size);
+		list(,$this->record_size) = unpack("n", $record_size);
 
 		$current_position = fread($this->filehandle, 4);
-		$this->current_position = unpack("N", $current_position);
+		list(,$this->current_position) = unpack("N", $current_position);
 
 		$encryption_type = fread($this->filehandle, 2);
-		$this->encryption_type = unpack("n", $encryption_type);
+		list(,$this->encryption_type) = unpack("n", $encryption_type);
 
-		$unknown = fread($this->filehandle, 2);
-		$this->unknown = unpack("n", $unknown);
+		fread($this->filehandle, 2);
 
 		$identifier = fread($this->filehandle, 4);
-		$this->identifier = unpack("N", $identifier);
+		list(,$this->identifier) = unpack("N", $identifier);
 
 		list(,$remaining) = unpack("N",fread($this->filehandle, 4));
 		$remaining -= 4;
