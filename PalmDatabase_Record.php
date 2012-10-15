@@ -14,14 +14,6 @@ class PalmDatabase_Record
 		$this->attributes = $info["attributes"];
 		$this->id = $info["id"];
 		$this->size = $size;
-		$this->load();
-	}
-	public function load()
-	{
-		fseek($this->filehandle,$this->offset);
-		echo "Size: " . $this->size . "\n";	
-		$data = fread($this->filehandle,$this->size);
-		$this->data = $data;
 	}
 }
 

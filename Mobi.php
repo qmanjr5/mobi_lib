@@ -1,7 +1,7 @@
 <?php
 class mobi extends PalmDatabase
 {
-	public $compress;
+	public $compression;
 	public $unused;
 	public $text_length;
 	public $record_count;
@@ -80,10 +80,15 @@ class mobi extends PalmDatabase
 	public function load()
 	{
 		parent::load();
-		fseek($this->filehandle, $this->record[0]->offset);
+		foreach($this->records as $record)
+		{
+			fseek($this->filehandle, $record->offset);
+			$record->data = fread($this->filehandle, $record->size);
+		}
+		fseek($this->filehandle, $this->records[0]->offset);
+		
 		$compression = fread($this->filehandle, 2);
 		list(,$this->compression) = unpack("n", $compression);
-		
 		fread($this->filehandle, 2);
 		
 		$text_length = fread($this->filehandle, 4);
@@ -108,8 +113,11 @@ class mobi extends PalmDatabase
 
 		$identifier = fread($this->filehandle, 4);
 		list(,$this->identifier) = unpack("N", $identifier);
-
-		list(,$remaining) = unpack("N",fread($this->filehandle, 4));
+		
+		$header_length = fread($this->filehandle, 4);
+		list(,$this->header_length) = unpack("N", $header_length);
+		
+		$remaining = $this->records[0]->size;
 		$remaining -= 4;
 
 		$this->checkAndRead($this->mobi_type, 4, $remaining, "N");
@@ -162,14 +170,14 @@ class mobi extends PalmDatabase
 			$this->checkAndRead($this->exth_identifier, 4, $remaining, "N");
 			$this->checkAndRead($this->exth_length, 4, $remaining, "N");
 			$this->checkAndRead($this->exth_numRecords, 4, $remaining, "N");
-			for($i=1;$i>=$this->exth_numRecords;$i++)
+			for($i=1;$i<=$this->exth_numRecords;$i++)
 			{
 				$this->checkAndRead($this->exth_records[$i]["record_type"], 4, $remaining, "N");
 				$this->checkAndRead($this->exth_records[$i]["record_length"], 4, $remaining, "N");
 				$length = $this->exth_records[$i]["record_length"] - 8;
 				$tihs->checkAndRead($this->exth_records[$i]["data"], $length, $remaining);
 			}
-			fread($this->filehandle, $this->header_length%4);
+			fread($this->filehandle, $remaining%4);
 		}	
 		if(!($this->indx_record_offset & 0xFFFFFFFF))
 		{

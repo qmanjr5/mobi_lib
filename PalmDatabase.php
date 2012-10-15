@@ -2,7 +2,7 @@
 class PalmDatabase
 {
 	public $properties;
-	public $records;
+	public $records = array();
 	public $filehandle;
 
 	public function __construct($file)
@@ -41,8 +41,6 @@ class PalmDatabase
 					$stat = fstat($this->filehandle);
 					$end = $stat["size"];
 				}
-				echo "Start: " . $start . "\n";
-				echo "End: " . $end . "\n";
 				$size = $end - $start;
 				if($size<0)
 				{
