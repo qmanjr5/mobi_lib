@@ -37,7 +37,6 @@ class LZ77 {
 		$this->referencePrefix = '`';
 		$this->referenceIntBase = isset ($referenceIntBase) ? $referenceIntBase : 96;
 		$this->referenceIntFloorCode = ord(' ');
-		print $this->referenceIntFloorCode;
 		$this->referenceIntCeilCode = $this->referenceIntFloorCode + $this->referenceIntBase - 1;
 		$this->maxStringDistance = pow($this->referenceIntBase, 2) - 1;
 		$this->minStringLength = isset ($minStringLength) ? $minStringLength : 5;
