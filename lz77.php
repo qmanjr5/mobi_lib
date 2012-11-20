@@ -28,7 +28,7 @@ class PalmDoc_LZ77
 				{
 					$pair_distance = 0x422d & $val;
 					$pair_length = 0x07 & $val;
-					$decompressed .= substr($decompressed, strlen($decompressed)-$distance, $length);
+					$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
 				}
 				elseif($val>=0xc0 && $val<=0xff)
 				{
