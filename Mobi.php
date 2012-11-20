@@ -83,7 +83,8 @@ class mobi extends PalmDatabase
 		foreach($this->records as $record)
 		{
 			fseek($this->filehandle, $record->offset);
-			$record->data = fread($this->filehandle, $record->size);
+			$recordData = fread($this->filehandle, $record->size);
+			$record->data = PalmDoc_LZ77::decompress($recordData, $record->size);
 		}
 		fseek($this->filehandle, $this->records[0]->offset);
 		
@@ -194,10 +195,14 @@ class mobi extends PalmDatabase
 			$this->checkAndRead($this->ordt_start, 4);
 			$this->checkAndRead($this->ligt_start, 4);	
 		}
+		foreach($this->records as $record)
+		{
+			
+		}
 	}
 	public function checkAndRead(&$field, $length, &$remaining, $unpack = null)
 	{
-		if(!remaining)
+		if(!$remaining)
 		{
 			return;
 		}
