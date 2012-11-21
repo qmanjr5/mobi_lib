@@ -5,45 +5,38 @@ class PalmDoc_LZ77
 	{
 		
 	}
-	public static function decompress($data, $length)
+	public static function decompress($data)
 	{
 		$decompressed = "";
 		$pair_distance = 0;
 		$pair_length = 0;
-
 		if(is_string($data))
 		{
-			if(is_int($length))
+			$fp = fopen("data://text/plain;base64," . base64_encode($data), "r");
+			while($val = fread($fp, 1))
 			{
-				$position = 0;
-				while(is_string($val=substr($data, $position, 1)))
+				if($val == 0x00 || ($val >= 0x09 && $val <=0x7F))
 				{
-					if($val == 0x00 || ($val >= 0x09 && $val <=0x7F))
-					{
-						$decompressed .= $val;
-					}
-					elseif($val>=0x01 && $val<=0x08)
-					{
-						$decompressed .= substr($data, $position, $val);
-					}
-					elseif($val>=0x80 && $val<=0xbf)
-					{
-						$pair_distance = 0x422d & $val;
-						$pair_length = 0x07 & $val;
-						$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
-					}
-					elseif($val>=0xc0 && $val<=0xff)
-					{
-						$decompressed .= " " . 0x80 & $val;
-					}
-					$position++;
+					$decompressed .= $val;
 				}
-				return $decompressed;
+				elseif($val>=0x01 && $val<=0x08)
+				{
+					$position = ftell($fp);
+					$decompressed .= fread($fp, $val);	
+					fseek($fp, $position);
+				}
+				elseif($val>=0x80 && $val<=0xbf)
+				{
+					$pair_distance = 0x422d & $val;
+					$pair_length = 0x07 & $val;
+					$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
+				}
+				elseif($val>=0xc0 && $val<=0xff)
+				{
+					$decompressed .= " " . $val & 0x80;
+				}
 			}
-			else
-			{
-				throw new exception("You must provide an integer for \$length. You provided a variable of type " . gettype($length) . ".");
-			}
+			return $decompressed;
 		}
 		else
 		{
