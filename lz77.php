@@ -11,35 +11,43 @@ class PalmDoc_LZ77
 		$pair_distance = 0;
 		$pair_length = 0;
 
-		if(!is_resource($data))
+		if(is_string($data))
 		{
-			for($i=1;$i<$length;$i++)
+			if(is_int($length))
 			{
-				$val = substr($data, $i, 1);
-				if($val == 0x00 || ($val >= 0x09 && $val <=0x7F))
+				$position = 0;
+				while(is_string($val=substr($data, $position, 1)))
 				{
-					$decompressed .= $val;
+					if($val == 0x00 || ($val >= 0x09 && $val <=0x7F))
+					{
+						$decompressed .= $val;
+					}
+					elseif($val>=0x01 && $val<=0x08)
+					{
+						$decompressed .= substr($data, $position, $val);
+					}
+					elseif($val>=0x80 && $val<=0xbf)
+					{
+						$pair_distance = 0x422d & $val;
+						$pair_length = 0x07 & $val;
+						$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
+					}
+					elseif($val>=0xc0 && $val<=0xff)
+					{
+						$decompressed .= " " . 0x80 & $val;
+					}
+					$position++;
 				}
-				elseif($val>=0x01 && $val<=0x08)
-				{
-					$decompressed .= substr($data, $i, $val);
-				}
-				elseif($val>=0x80 && $val<=0xbf)
-				{
-					$pair_distance = 0x422d & $val;
-					$pair_length = 0x07 & $val;
-					$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
-				}
-				elseif($val>=0xc0 && $val<=0xff)
-				{
-					$decompressed .= " " . 0x80 & $val;
-				}
+				return $decompressed;
 			}
-			return $decompressed;
+			else
+			{
+				throw new exception("You must provide an integer for \$length. You provided a variable of type " . gettype($length) . ".");
+			}
 		}
 		else
 		{
-			throw new exception("Must provide resource. You provided a variable of type " . gettype($data) . ".");
+			throw new exception("You must provide a string. You provided a variable of type " . gettype($data) . ".");
 		}
 	}
 }
