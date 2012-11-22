@@ -8,41 +8,48 @@ class PalmDoc_LZ77
 	public static function decompress($data)
 	{
 		$decompressed = "";
-		$pair_distance = 0;
-		$pair_length = 0;
+		$offset = 0;
+		$length = strlen($data);
 		if(is_string($data))
 		{
-			$fp = fopen("data://text/plain;base64," . base64_encode($data), "r");
-			while(!feof($fp))
+			while($offset < $length)
 			{
-				echo $val;
-				$val = fread($fp, 1);
-				if($val == 0x00 || ($val >= 0x09 && $val <=0x7F))
+				$literal = substr($data, $offset++, 1);
+				$val = ord($literal);
+
+				if($val == 0x00)
 				{
-					$decompressed .= $val;
+					$decompressed .= $literal;
 				}
-				elseif($val>=0x01 && $val<=0x08)
+				elseif($val <= 0x08)
 				{	
-					$decompressed .= fread($fp, $val);	
+					$decompressed .= substr($data, $offset, $val);
+					$offset += $val;	
 				}
-				elseif($val>=0x80 && $val<=0xbf)
+				elseif($val <= 0x7F)
 				{
-					echo "Length, distance\n";	
-					$val .= fread($fp, 1);
-					$pair_distance = 0x422d & $val;
-					$pair_length = 0x07 & $val;
-					$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
+					$decompressed .= $literal;
 				}
-				elseif($val>=0xc0 && $val<=0xff)
+				elseif($val <= 0xBF)
 				{
-					echo "4th if\n";
-					$decompressed .= " " . ($val ^ 0x80);
+					$offset++;
+					list(,$val) = unpack('n', substr($data, $offset-2, 2));
+					$val &= 0x3fff;
+					$pair_length = ($val & 0x0007) + 3;
+					$pair_distance = $val >> 3;
+					
+					$textLength = strlen($decompressed);
+					for($i = 0; $i < $pair_length; $i++) {
+						$decompressed .= substr($decompressed, $textLength-$pair_distance, 1);
+						$textLength++;
+					}
 				}
-				else
+				elseif($val <= 0xFF)
 				{
-					echo "Else\n";
+					$decompressed .= " " . chr($val ^ 0x80);
 				}
 			}
+			
 			return $decompressed;
 		}
 		else
@@ -51,5 +58,3 @@ class PalmDoc_LZ77
 		}
 	}
 }
-
-		
