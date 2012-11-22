@@ -83,8 +83,10 @@ class mobi extends PalmDatabase
 		foreach($this->records as $record)
 		{
 			fseek($this->filehandle, $record->offset);
+
 			$recordData = fread($this->filehandle, $record->size);
 			$record->data = PalmDoc_LZ77::decompress($recordData);
+
 		}
 		fseek($this->filehandle, $this->records[0]->offset);
 		

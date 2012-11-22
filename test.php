@@ -6,7 +6,7 @@ include ("PalmDatabase_Attributes.php");
 include ("PalmDatabase_RecordAttributes.php");
 include ("Mobi.php");
 include ("lz77.php");
-$test = new Mobi("testbook2.mobi");
+$test = new Mobi("testbook.mobi");
 echo "Database name: " . $test->properties->name . "\n";
 echo "Database records: " . count($test->records) . "\n";
 echo "Attributes" . "\n";
