@@ -23,17 +23,18 @@ class PalmDoc_LZ77
 				{
 					$position = ftell($fp);
 					$decompressed .= fread($fp, $val);	
-					fseek($fp, $position);
 				}
 				elseif($val>=0x80 && $val<=0xbf)
 				{
+					$position = ftell($fp);
+					$val .= fread($fp, 1);
 					$pair_distance = 0x422d & $val;
 					$pair_length = 0x07 & $val;
 					$decompressed .= substr($decompressed, strlen($decompressed)-$pair_distance, $pair_length);
 				}
 				elseif($val>=0xc0 && $val<=0xff)
 				{
-					$decompressed .= " " . $val & 0x80;
+					$decompressed .= " " . ($val ^ 0x80);
 				}
 			}
 			return $decompressed;

@@ -20,5 +20,4 @@ echo "Record attributes \n";
 echo "Compression type: " . $test->compression . "\n";
 echo "Header length: " . $test->records[0]->size . "\n";
 echo "Header length % 4: " . $test->records[0]->size % 4 . "\n";
-$data = PalmDoc_LZ77::decompress($test->records[1]->data);
-echo $data;
+var_dump($test->records[3]);
