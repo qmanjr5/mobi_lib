@@ -125,7 +125,6 @@ class mobi extends PalmDatabase
 
 		$this->checkAndRead($this->mobi_type, 4, $remaining, "N");
 		$this->checkAndRead($this->text_encoding, 4, $remaining, "N");
-		echo $this->text_encoding . "\n";
 		$this->checkAndRead($this->unique_id, 4, $remaining, "N");
 		$this->checkAndRead($this->file_version, 4, $remaining, "N");
 		$this->checkAndRead($this->ortographic_index, 4, $remaining, "N");
